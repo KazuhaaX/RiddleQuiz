@@ -13,5 +13,3 @@ Hard,A very pretty thing I am, fluttering in the pale-blue sky. Delicate, fragil
 Hard,Tool of thief, toy of queen. Always used to be unseen. Sign of joy, sign of sorrow. Giving all likeness borrowed. What am I?,A mask,A shadow,A veil,A
 Hard,It's been around for millions of years, but is never more than a month old. What is it?,A tree,The moon,A comet,B
 Hard,They come out at night without being called and are lost in the day without being stolen. What are they?,Fireflies,Dreams,Stars,C
-
-
