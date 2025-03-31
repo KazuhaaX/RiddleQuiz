@@ -110,7 +110,7 @@
                 scanner.nextLine();
             }
         }
-
+        
         // Edit profile method
         private static void changeUsername(String currentUsername) {
             System.out.print("\nEnter new username: ");
@@ -174,6 +174,7 @@
 
         // Signup method
         private static void signUp() {
+            System.out.println("\n\n                                Sign-Up Menu                               ");
             System.out.print("Enter a username: ");
             String username = scanner.nextLine();
 
@@ -190,10 +191,12 @@
             saveUsers();
             saveLeaderboard();
             System.out.println("Sign-up successful! You can now log in.");
+            showMainMenu(username);
         }
 
         // Login method
         private static String login() {
+            System.out.println("\n\n                                Login Menu                                ");
             System.out.print("Enter username: ");
             String username = scanner.nextLine();
 
@@ -211,28 +214,28 @@
 
         // Quiz method
         private static void playQuiz(String username) {
-    if (questions.isEmpty()) {
-        System.out.println("No questions available.");
-        return;
-    }
+            if (questions.isEmpty()) {
+                System.out.println("No questions available.");
+                return;
+    }   
 
-    // Group questions by difficulty
-    Map<String, List<Question>> questionsByDifficulty = new HashMap<>();
-    questionsByDifficulty.put("Easy", new ArrayList<>());
-    questionsByDifficulty.put("Medium", new ArrayList<>());
-    questionsByDifficulty.put("Hard", new ArrayList<>());
+        // Group questions by difficulty
+        Map<String, List<Question>> questionsByDifficulty = new HashMap<>();
+        questionsByDifficulty.put("Easy", new ArrayList<>());
+        questionsByDifficulty.put("Medium", new ArrayList<>());
+        questionsByDifficulty.put("Hard", new ArrayList<>());
     
-    for (Question q : questions) {
-        questionsByDifficulty.get(q.getDifficulty()).add(q);
+        for (Question q : questions) {
+            questionsByDifficulty.get(q.getDifficulty()).add(q);
     }
 
-    long startTime = System.currentTimeMillis();
-    int totalScore = 0;
-    int totalQuestions = 0;
+        long startTime = System.currentTimeMillis();
+        int totalScore = 0;
+        int totalQuestions = 0;
 
-    for (String difficulty : new String[]{"Easy", "Medium", "Hard"}) {
+        for (String difficulty : new String[]{"Easy", "Medium", "Hard"}) {
         List<Question> difficultyQuestions = questionsByDifficulty.get(difficulty);
-        if (difficultyQuestions.isEmpty()) continue;
+            if (difficultyQuestions.isEmpty()) continue;
         
         System.out.println("\n\nStarting " + difficulty + " difficulty questions!");
         int difficultyScore = 0;
@@ -270,18 +273,29 @@
         System.out.println("Your score for " + difficulty + " questions: " + difficultyScore + "/" + difficultyQuestions.size());
     }
 
-    long endTime = System.currentTimeMillis();
-    long completionTime = (endTime - startTime) / 1000;
-    System.out.println("\n\nQuiz Over! Your total score: " + totalScore + "/" + totalQuestions);
-    System.out.println("Total time taken: " + completionTime + " seconds");
+        long endTime = System.currentTimeMillis();
+        long durationMillis = endTime - startTime;
+        String formattedTime = formatDuration(durationMillis);
+        System.out.println("\n\nQuiz Over! Your total score: " + totalScore + "/" + totalQuestions);
+        System.out.println("Total time taken: " + formattedTime);
 
-    leaderboard.put(username, totalScore);
-    if (!completionTimes.containsKey(username) || completionTime < completionTimes.get(username)) {
-        completionTimes.put(username, completionTime);
-    }
-    saveLeaderboard();
+        // Update leaderboard and completion times
+        leaderboard.put(username, totalScore);
+        if (!completionTimes.containsKey(username) || durationMillis < completionTimes.get(username)) {
+            completionTimes.put(username, durationMillis);  // Store the raw millis value
+        }
+        saveLeaderboard();
 }
 
+private static String formatDuration(long durationMillis) {
+    long seconds = (durationMillis / 1000) % 60;
+    long minutes = (durationMillis / (1000 * 60)) % 60;
+    long hours = (durationMillis / (1000 * 60 * 60)) % 24;
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+}
+
+
+        // Leaderboard method
         private static void showLeaderboard() {
             while (true) {
                 System.out.println("\n\n                                Leaderboard                              ");
@@ -319,6 +333,8 @@
             }
         }
 
+
+        // Loading user data
         private static void loadUsers() {
             try (Scanner fileScanner = new Scanner(new File(USERS_FILE))) {
                 while (fileScanner.hasNextLine()) {
@@ -332,6 +348,7 @@
             }
         }
 
+        // Load leaderboard data
         private static void loadLeaderboard() {
             try (Scanner fileScanner = new Scanner(new File(LEADERBOARD_FILE))) {
                 while (fileScanner.hasNextLine()) {
@@ -358,6 +375,7 @@
             }
         }
 
+        // Load questions from file
         private static void loadQuestions() {
             try (Scanner fileScanner = new Scanner(new File(QUESTIONS_FILE))) {
                 int questionNumber = 1;
@@ -371,7 +389,8 @@
                         parts[i] = parts[i].trim().replaceAll("^\"|\"$", "");
                     }
                     
-                    if (parts.length >= 6) {  // Need at least difficulty, text, 3 options, and answer
+                    // Question files need difficulty, text, 3 options, and answer
+                    if (parts.length >= 6) {
                         String difficulty = parts[0];
                         String text = parts[1];
                         String[] options = Arrays.copyOfRange(parts, 2, parts.length - 1);
@@ -384,6 +403,7 @@
             }
         }
 
+        // Save user data method
         private static void saveUsers() {
             try (PrintWriter writer = new PrintWriter(new FileWriter(USERS_FILE))) {
                 users.forEach((user, pass) -> writer.println(user + "," + pass));
@@ -392,6 +412,7 @@
             }
         }
 
+        // Save leaderboard data method
         private static void saveLeaderboard() {
             try (PrintWriter writer = new PrintWriter(new FileWriter(LEADERBOARD_FILE))) {
                 leaderboard.forEach((user, score) -> {
@@ -403,7 +424,7 @@
             }
         }
     }
-
+    
     class Question {
         private final int number;
         private final String difficulty;
