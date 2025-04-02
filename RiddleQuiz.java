@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-class Test {
+class RiddleQuiz {
     private static final Scanner scanner = new Scanner(System.in);
     private static final Map<String, String> users = new HashMap<>();
     private static final Map<String, Long> completionTimes = new HashMap<>();
